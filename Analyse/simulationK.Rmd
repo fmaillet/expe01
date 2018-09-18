@@ -1,0 +1,126 @@
+---
+title: "Experiment Simulation"
+author: "Frédéric"
+date: "18 septembre 2018"
+output: pdf_document
+header-includes:
+   - \usepackage{booktabs}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(weights)
+```
+
+
+```{r comment=NA, echo=FALSE, message=FALSE}
+# Nombre de participants
+set.seed(1234)
+n <- 100
+# Mémoire : scores [0:10]
+mem_mean <- 5
+mem_sd   <- 2
+# Compréhension code de surface [0:15]
+comp_C_mean <- 10
+comp_C_sd   <- 3
+# Compréhension sémantique [0:15]
+comp_S_mean <- 9
+comp_S_sd   <- 3
+# Compréhension inférences [0:15]
+comp_I_mean <- 8
+comp_I_sd   <- 3
+
+
+data <- data.frame (ID=1:n)
+data$sexe <- as.factor(sample(c(1,2), n, replace=TRUE))
+data$age <-  sample(18:25, n, replace=TRUE)
+data$signal <- as.factor(sample(c('n', 'v', 't'), n, replace = TRUE))
+data$task <- as.factor(sample(c('c', 'v', 's', 't'), n, replace = TRUE))
+
+data$memory <- round (rnorm (n, mem_mean, mem_sd), 0)
+data$memory[data$memory < 0] <- 0
+data$memory[data$memory > 10] <- 10
+
+data$comp_C <- round (rnorm (n, comp_C_mean, comp_C_sd), 0)
+data$comp_C[data$comp_C < 0] <- 0
+data$comp_C[data$comp_C > 15] <- 15
+
+data$comp_S <- round (rnorm (n, comp_S_mean, comp_S_sd), 0)
+data$comp_S[data$comp_S < 0] <- 0
+data$comp_S[data$comp_S > 15] <- 15
+
+data$comp_I <- round (rnorm (n, comp_I_mean, comp_I_sd), 0)
+data$comp_I[data$comp_I < 0] <- 0
+data$comp_I[data$comp_I > 15] <- 15
+
+count <- matrix(c(1,2,3,4,5, 6, 7, 8, 9, 10, 11, 12), nrow = 4)
+count[1,1] <- nrow (subset(data, signal=='n' & task=='c'))
+count[1,2] <- nrow (subset(data, signal=='v' & task=='c'))
+count[1,3] <- nrow (subset(data, signal=='t' & task=='c'))
+count[2,1] <- nrow (subset(data, signal=='n' & task=='t'))
+count[2,2] <- nrow (subset(data, signal=='v' & task=='t'))
+count[2,3] <- nrow (subset(data, signal=='t' & task=='t'))
+count[3,1] <- nrow (subset(data, signal=='n' & task=='v'))
+count[3,2] <- nrow (subset(data, signal=='v' & task=='v'))
+count[3,3] <- nrow (subset(data, signal=='t' & task=='v'))
+count[4,1] <- nrow (subset(data, signal=='n' & task=='s'))
+count[4,2] <- nrow (subset(data, signal=='v' & task=='s'))
+count[4,3] <- nrow (subset(data, signal=='t' & task=='s'))
+
+f <- fisher.test(count)
+```
+
+## Simulation datas
+
+`r n` participants datas were randomly simulated : `r length(which(data$sexe == 1))` men and `r length(which(data$sexe == 2))` women. Mean age was `r round(mean(data$age),1)` (SD = `r round(sd(data$age),1)`). Participants repartition didn't significantly differ across conditions (Table \ref{tab:repartition}, Fisher's Exact Test for Count Data, \textit{p} = `r rd(f$p.value, 3)`).
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ c c c c c}
+  \toprule
+   Task & \multicolumn{3}{c}{Signal} \\
+   \cmidrule(lr){2-4}
+   & none  & visual & textual & Total \\
+   \cmidrule(lr){2-2} \cmidrule(lr){3-3} \cmidrule(lr){4-4} \cmidrule(lr){5-5}
+  Control & `r nrow (subset(data, signal=='n' & task=='c'))` & `r nrow (subset(data, signal=='v' & task=='c'))` & `r nrow (subset(data, signal=='t' & task=='c'))` & `r nrow (subset(data, task=='c'))`\\
+  Verbal & `r nrow (subset(data, signal=='n' & task=='t'))` & `r nrow (subset(data, signal=='v' & task=='t'))` & `r nrow (subset(data, signal=='t' & task=='t'))` & `r nrow (subset(data, task=='t'))`\\
+  Visual & `r nrow (subset(data, signal=='n' & task=='v'))` & `r nrow (subset(data, signal=='v' & task=='v'))` & `r nrow (subset(data, signal=='t' & task=='v'))` & `r nrow (subset(data, task=='v'))`\\
+  Spatial & `r nrow (subset(data, signal=='n' & task=='s'))` & `r nrow (subset(data, signal=='v' & task=='s'))` & `r nrow (subset(data, signal=='t' & task=='s'))` & `r nrow (subset(data, task=='s'))`\\
+  \cmidrule(lr){2-4} \cmidrule(lr){5-5}
+  Total & `r nrow (subset(data, signal=='n'))` & `r nrow (subset(data, signal=='v'))` & `r nrow (subset(data, signal=='t'))` & `r n` \\
+  \bottomrule
+\end{tabular}
+\caption{Participants repartition across conditions}
+\label{tab:repartition}
+\end{table}
+
+```{r pressure, echo=FALSE}
+oldpar <- par(mfrow=c(2,2), oma = c( 0, 0, 0, 0 ))
+plot(density(data$memory), main="", xlab="Memory", ylab="")
+plot(density(data$comp_C), main="", xlab="Surface comprehension", ylab="")
+plot(density(data$comp_S), main="", xlab="Semantic comprehension", ylab="")
+plot(density(data$comp_I), main="", xlab="Inference comprehension", ylab="")
+par(oldpar)
+
+```
+
+## Performances
+
+\begin{table}[h]
+\centering
+\begin{tabular}{ c c c c c}
+  \toprule
+   Task & \multicolumn{3}{c}{Signal} \\
+   \cmidrule(lr){2-4}
+   & none  & visual & textual & All \\
+   \cmidrule(lr){2-2} \cmidrule(lr){3-3} \cmidrule(lr){4-4} \cmidrule(lr){5-5}
+  Control & `r round(mean(subset(data, signal=='n' & task=='c')$memory),2)` & `r round(mean(subset(data, signal=='v' & task=='c')$memory),2)` & `r round(mean(subset(data, signal=='t' & task=='c')$memory),2)` & `r round(mean(subset(data, task=='c')$memory),2)`\\
+  Verbal & `r round(mean(subset(data, signal=='n' & task=='t')$memory),2)` & `r round(mean(subset(data, signal=='v' & task=='t')$memory),2)` & `r round(mean(subset(data, signal=='t' & task=='t')$memory),2)` & `r round(mean(subset(data, task=='t')$memory),2)`\\
+  Visual & `r round(mean(subset(data, signal=='n' & task=='v')$memory),2)` & `r round(mean(subset(data, signal=='v' & task=='v')$memory),2)` & `r round(mean(subset(data, signal=='t' & task=='v')$memory),2)` & `r round(mean(subset(data, task=='v')$memory),2)`\\
+  Spatial & `r round(mean(subset(data, signal=='n' & task=='s')$memory),2)` & `r round(mean(subset(data, signal=='v' & task=='s')$memory),2)` & `r round(mean(subset(data, signal=='t' & task=='s')$memory),2)` & `r round(mean(subset(data, task=='s')$memory),2)`\\
+  \cmidrule(lr){2-4} \cmidrule(lr){5-5}
+  All & `r round(mean(subset(data, signal=='n')$memory),2)` & `r round(mean(subset(data, signal=='v')$memory),2)` & `r round(mean(subset(data, signal=='t')$memory),2)` & `r round(mean(data$memory),2)` \\
+  \bottomrule
+\end{tabular}
+\caption{Participants memory performance across conditions}
+\end{table}

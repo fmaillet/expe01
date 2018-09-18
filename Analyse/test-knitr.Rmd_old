@@ -1,0 +1,40 @@
+---
+title: "Essai knitr"
+author: "Frédéric"
+date: "7 septembre 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r}
+f <- list.files(pattern="subject-\\d+\\.csv")
+
+n = length(f)
+```
+
+## Introduction
+
+This is the analysis results of all the concurrent tasks pre-test.
+`r n` volunteers participate in this pre-test.
+
+
+ 
+
+```{r}
+a = 3
+a
+pi
+```
+
+## Spatial task
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
