@@ -5,6 +5,7 @@ date: "18 septembre 2018"
 output: pdf_document
 header-includes:
    - \usepackage{booktabs}
+   - \usepackage{subfig}
 ---
 
 ```{r setup, include=FALSE}
@@ -86,7 +87,7 @@ f <- fisher.test(count)
   Verbal & `r nrow (subset(data, signal=='n' & task=='t'))` & `r nrow (subset(data, signal=='v' & task=='t'))` & `r nrow (subset(data, signal=='t' & task=='t'))` & `r nrow (subset(data, task=='t'))`\\
   Visual & `r nrow (subset(data, signal=='n' & task=='v'))` & `r nrow (subset(data, signal=='v' & task=='v'))` & `r nrow (subset(data, signal=='t' & task=='v'))` & `r nrow (subset(data, task=='v'))`\\
   Spatial & `r nrow (subset(data, signal=='n' & task=='s'))` & `r nrow (subset(data, signal=='v' & task=='s'))` & `r nrow (subset(data, signal=='t' & task=='s'))` & `r nrow (subset(data, task=='s'))`\\
-  \cmidrule(lr){2-4} \cmidrule(lr){5-5}
+  \cmidrule(lr){2-2} \cmidrule(lr){3-3} \cmidrule(lr){4-4} \cmidrule(lr){5-5}
   Total & `r nrow (subset(data, signal=='n'))` & `r nrow (subset(data, signal=='v'))` & `r nrow (subset(data, signal=='t'))` & `r n` \\
   \bottomrule
 \end{tabular}
@@ -94,33 +95,82 @@ f <- fisher.test(count)
 \label{tab:repartition}
 \end{table}
 
-```{r pressure, echo=FALSE}
-oldpar <- par(mfrow=c(2,2), oma = c( 0, 0, 0, 0 ))
-plot(density(data$memory), main="", xlab="Memory", ylab="")
-plot(density(data$comp_C), main="", xlab="Surface comprehension", ylab="")
-plot(density(data$comp_S), main="", xlab="Semantic comprehension", ylab="")
-plot(density(data$comp_I), main="", xlab="Inference comprehension", ylab="")
-par(oldpar)
+<!-- to label figure : -->
+<!-- see https://rosannavanhespenresearch.wordpress.com/2016/03/18/writing-your-thesis-with-r-markdown-3-figures-r-code-and-tables/ -->
 
-```
+
+  ```{r fig.cap = "figure caption. \\label{figurelabel}", echo=FALSE}
+  oldpar <- par(mfrow=c(2,2), oma = c( 0, 0, 0, 0 ))
+  plot(density(data$memory), main="", xlab="Memory", ylab="")
+  plot(density(data$comp_C), main="", xlab="Surface comprehension", ylab="")
+  plot(density(data$comp_S), main="", xlab="Semantic comprehension", ylab="")
+  plot(density(data$comp_I), main="", xlab="Inference comprehension", ylab="")
+  par(oldpar)
+  
+  ```
 
 ## Performances
 
 \begin{table}[h]
 \centering
-\begin{tabular}{ c c c c c}
+\subfloat[Memory]{\begin{tabular}{ c c c c c}
   \toprule
    Task & \multicolumn{3}{c}{Signal} \\
    \cmidrule(lr){2-4}
    & none  & visual & textual & All \\
    \cmidrule(lr){2-2} \cmidrule(lr){3-3} \cmidrule(lr){4-4} \cmidrule(lr){5-5}
-  Control & `r round(mean(subset(data, signal=='n' & task=='c')$memory),2)` & `r round(mean(subset(data, signal=='v' & task=='c')$memory),2)` & `r round(mean(subset(data, signal=='t' & task=='c')$memory),2)` & `r round(mean(subset(data, task=='c')$memory),2)`\\
-  Verbal & `r round(mean(subset(data, signal=='n' & task=='t')$memory),2)` & `r round(mean(subset(data, signal=='v' & task=='t')$memory),2)` & `r round(mean(subset(data, signal=='t' & task=='t')$memory),2)` & `r round(mean(subset(data, task=='t')$memory),2)`\\
-  Visual & `r round(mean(subset(data, signal=='n' & task=='v')$memory),2)` & `r round(mean(subset(data, signal=='v' & task=='v')$memory),2)` & `r round(mean(subset(data, signal=='t' & task=='v')$memory),2)` & `r round(mean(subset(data, task=='v')$memory),2)`\\
-  Spatial & `r round(mean(subset(data, signal=='n' & task=='s')$memory),2)` & `r round(mean(subset(data, signal=='v' & task=='s')$memory),2)` & `r round(mean(subset(data, signal=='t' & task=='s')$memory),2)` & `r round(mean(subset(data, task=='s')$memory),2)`\\
-  \cmidrule(lr){2-4} \cmidrule(lr){5-5}
-  All & `r round(mean(subset(data, signal=='n')$memory),2)` & `r round(mean(subset(data, signal=='v')$memory),2)` & `r round(mean(subset(data, signal=='t')$memory),2)` & `r round(mean(data$memory),2)` \\
+  Control & `r format(mean(subset(data, signal=='n' & task=='c')$memory),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='v' & task=='c')$memory),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='t' & task=='c')$memory),digits = 2, nsmall = 2)` & `r format(mean(subset(data, task=='c')$memory),digits = 2, nsmall = 2)`\\
+  Verbal & `r format(mean(subset(data, signal=='n' & task=='t')$memory),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='v' & task=='t')$memory),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='t' & task=='t')$memory),digits = 2, nsmall = 2)` & `r format(mean(subset(data, task=='t')$memory),digits = 2, nsmall = 2)`\\
+  Visual & `r format(mean(subset(data, signal=='n' & task=='v')$memory),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='v' & task=='v')$memory),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='t' & task=='v')$memory),digits = 2, nsmall = 2)` & `r format(mean(subset(data, task=='v')$memory),digits = 2, nsmall = 2)`\\
+  Spatial & `r format(mean(subset(data, signal=='n' & task=='s')$memory),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='v' & task=='s')$memory),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='t' & task=='s')$memory),digits = 2, nsmall = 2)` & `r format(mean(subset(data, task=='s')$memory),digits = 2, nsmall = 2)`\\
+  \cmidrule(lr){2-2} \cmidrule(lr){3-3} \cmidrule(lr){4-4} \cmidrule(lr){5-5}
+  All & `r format(mean(subset(data, signal=='n')$memory),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='v')$memory),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='t')$memory),digits = 2, nsmall = 2)` & `r format(mean(data$memory),digits = 2, nsmall = 2)` \\
   \bottomrule
-\end{tabular}
-\caption{Participants memory performance across conditions}
+\end{tabular}}
+\quad
+\subfloat[Surface code]{\begin{tabular}{ c c c c c}
+  \toprule
+   Task & \multicolumn{3}{c}{Signal} \\
+   \cmidrule(lr){2-4}
+   & none  & visual & textual & All \\
+   \cmidrule(lr){2-2} \cmidrule(lr){3-3} \cmidrule(lr){4-4} \cmidrule(lr){5-5}
+  Control & `r format(mean(subset(data, signal=='n' & task=='c')$comp_C),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='v' & task=='c')$comp_C),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='t' & task=='c')$comp_C),digits = 2, nsmall = 2)` & `r format(mean(subset(data, task=='c')$comp_C),digits = 2, nsmall = 2)`\\
+  Verbal & `r format(mean(subset(data, signal=='n' & task=='t')$comp_C),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='v' & task=='t')$comp_C),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='t' & task=='t')$comp_C),digits = 2, nsmall = 2)` & `r format(mean(subset(data, task=='t')$comp_C),digits = 2, nsmall = 2)`\\
+  Visual & `r format(mean(subset(data, signal=='n' & task=='v')$comp_C),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='v' & task=='v')$comp_C),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='t' & task=='v')$comp_C),digits = 2, nsmall = 2)` & `r format(mean(subset(data, task=='v')$comp_C),digits = 2, nsmall = 2)`\\
+  Spatial & `r format(mean(subset(data, signal=='n' & task=='s')$comp_C),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='v' & task=='s')$comp_C),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='t' & task=='s')$comp_C),digits = 2, nsmall = 2)` & `r format(mean(subset(data, task=='s')$comp_C),digits = 2, nsmall = 2)`\\
+  \cmidrule(lr){2-2} \cmidrule(lr){3-3} \cmidrule(lr){4-4} \cmidrule(lr){5-5}
+  All & `r format(mean(subset(data, signal=='n')$comp_C),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='v')$comp_C),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='t')$comp_C),digits = 2, nsmall = 2)` & `r format(mean(data$comp_C),digits = 2, nsmall = 2)` \\
+  \bottomrule
+\end{tabular}}
+\quad
+\subfloat[Semantic]{\begin{tabular}{ c c c c c}
+  \toprule
+   Task & \multicolumn{3}{c}{Signal} \\
+   \cmidrule(lr){2-4}
+   & none  & visual & textual & All \\
+   \cmidrule(lr){2-2} \cmidrule(lr){3-3} \cmidrule(lr){4-4} \cmidrule(lr){5-5}
+  Control & `r format(mean(subset(data, signal=='n' & task=='c')$comp_S),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='v' & task=='c')$comp_S),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='t' & task=='c')$comp_S),digits = 2, nsmall = 2)` & `r format(mean(subset(data, task=='c')$comp_S),digits = 2, nsmall = 2)`\\
+  Verbal & `r format(mean(subset(data, signal=='n' & task=='t')$comp_S),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='v' & task=='t')$comp_S),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='t' & task=='t')$comp_S),digits = 2, nsmall = 2)` & `r format(mean(subset(data, task=='t')$comp_S),digits = 2, nsmall = 2)`\\
+  Visual & `r format(mean(subset(data, signal=='n' & task=='v')$comp_S),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='v' & task=='v')$comp_S),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='t' & task=='v')$comp_S),digits = 2, nsmall = 2)` & `r format(mean(subset(data, task=='v')$comp_S),digits = 2, nsmall = 2)`\\
+  Spatial & `r format(mean(subset(data, signal=='n' & task=='s')$comp_S),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='v' & task=='s')$comp_S),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='t' & task=='s')$comp_S),digits = 2, nsmall = 2)` & `r format(mean(subset(data, task=='s')$comp_S),digits = 2, nsmall = 2)`\\
+  \cmidrule(lr){2-2} \cmidrule(lr){3-3} \cmidrule(lr){4-4} \cmidrule(lr){5-5}
+  All & `r format(mean(subset(data, signal=='n')$comp_S),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='v')$comp_S),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='t')$comp_S),digits = 2, nsmall = 2)` & `r format(mean(data$comp_S),digits = 2, nsmall = 2)` \\
+  \bottomrule
+\end{tabular}}
+\quad
+\subfloat[Inference]{\begin{tabular}{ c c c c c}
+  \toprule
+   Task & \multicolumn{3}{c}{Signal} \\
+   \cmidrule(lr){2-4}
+   & none  & visual & textual & All \\
+   \cmidrule(lr){2-2} \cmidrule(lr){3-3} \cmidrule(lr){4-4} \cmidrule(lr){5-5}
+  Control & `r format(mean(subset(data, signal=='n' & task=='c')$comp_I),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='v' & task=='c')$comp_I),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='t' & task=='c')$comp_I),digits = 2, nsmall = 2)` & `r format(mean(subset(data, task=='c')$comp_I),digits = 2, nsmall = 2)`\\
+  Verbal & `r format(mean(subset(data, signal=='n' & task=='t')$comp_I),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='v' & task=='t')$comp_I),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='t' & task=='t')$comp_I),digits = 2, nsmall = 2)` & `r format(mean(subset(data, task=='t')$comp_I),digits = 2, nsmall = 2)`\\
+  Visual & `r format(mean(subset(data, signal=='n' & task=='v')$comp_I),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='v' & task=='v')$comp_I),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='t' & task=='v')$comp_I),digits = 2, nsmall = 2)` & `r format(mean(subset(data, task=='v')$comp_I),digits = 2, nsmall = 2)`\\
+  Spatial & `r format(mean(subset(data, signal=='n' & task=='s')$comp_I),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='v' & task=='s')$comp_I),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='t' & task=='s')$comp_I),digits = 2, nsmall = 2)` & `r format(mean(subset(data, task=='s')$comp_I),digits = 2, nsmall = 2)`\\
+  \cmidrule(lr){2-2} \cmidrule(lr){3-3} \cmidrule(lr){4-4} \cmidrule(lr){5-5}
+  All & `r format(mean(subset(data, signal=='n')$comp_I),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='v')$comp_I),digits = 2, nsmall = 2)` & `r format(mean(subset(data, signal=='t')$comp_I),digits = 2, nsmall = 2)` & `r format(mean(data$comp_I),digits = 2, nsmall = 2)` \\
+  \bottomrule
+\end{tabular}}
+\caption{Participants performance across conditions}
 \end{table}
